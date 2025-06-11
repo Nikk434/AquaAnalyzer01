@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import {
   Fish,
   Waves,
@@ -85,39 +84,31 @@ const AquaAnalyzerHome = () => {
   }, []);
 
   const StatCard = ({ icon: Icon, title, value, subtitle, color = "blue", trend }) => (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      whileHover={{ scale: 1.02 }}
-      className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100"
-    >
-      <div className="flex items-center justify-between mb-4">
-        <div className={`w-12 h-12 bg-gradient-to-r from-${color}-400 to-${color}-600 rounded-xl flex items-center justify-center`}>
-          <Icon className="w-6 h-6 text-white" />
+    <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100 transform hover:scale-105 transition-transform duration-200">
+      <div className="flex items-center justify-between mb-3">
+        <div className={`w-10 h-10 bg-gradient-to-r from-${color}-400 to-${color}-600 rounded-xl flex items-center justify-center`}>
+          <Icon className="w-5 h-5 text-white" />
         </div>
         {trend && (
-          <div className={`text-sm font-medium ${trend > 0 ? 'text-green-600' : trend < 0 ? 'text-red-600' : 'text-gray-600'}`}>
+          <div className={`text-xs font-medium ${trend > 0 ? 'text-green-600' : trend < 0 ? 'text-red-600' : 'text-gray-600'}`}>
             {trend > 0 ? '↗' : trend < 0 ? '↘' : '→'} {Math.abs(trend)}%
           </div>
         )}
       </div>
       <div>
-        <h3 className="text-2xl font-bold text-gray-900">{value}</h3>
-        <p className="text-gray-600 text-sm">{title}</p>
+        <h3 className="text-xl font-bold text-gray-900">{value}</h3>
+        <p className="text-gray-600 text-xs">{title}</p>
         {subtitle && <p className="text-xs text-gray-500 mt-1">{subtitle}</p>}
       </div>
-    </motion.div>
+    </div>
   );
 
   const SpeciesCard = ({ species }) => {
     const isLow = species.count < species.threshold;
     return (
-      <motion.div
-        whileHover={{ scale: 1.02 }}
-        className={`bg-white rounded-xl p-4 shadow-md border-l-4 ${
-          isLow ? 'border-red-400' : 'border-green-400'
-        }`}
-      >
+      <div className={`bg-white rounded-xl p-4 shadow-md border-l-4 ${
+        isLow ? 'border-red-400' : 'border-green-400'
+      } transform hover:scale-105 transition-transform duration-200`}>
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div 
@@ -140,7 +131,7 @@ const AquaAnalyzerHome = () => {
             )}
           </div>
         </div>
-      </motion.div>
+      </div>
     );
   };
 
@@ -151,12 +142,9 @@ const AquaAnalyzerHome = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3">
-              <motion.div
-                whileHover={{ scale: 1.1, rotate: 10 }}
-                className="w-10 h-10 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-xl flex items-center justify-center"
-              >
+              <div className="w-10 h-10 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-xl flex items-center justify-center transform hover:scale-110 hover:rotate-12 transition-all duration-200">
                 <Fish className="w-6 h-6 text-white" />
-              </motion.div>
+              </div>
               <div>
                 <span className="text-2xl font-bold text-white">AquaAnalyzer</span>
                 <p className="text-cyan-200 text-xs">Fish Monitoring System</p>
@@ -189,11 +177,7 @@ const AquaAnalyzerHome = () => {
           {/* Left Column - Live Feed */}
           <div className="lg:col-span-2 space-y-8">
             {/* Live Feed Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-white/95 backdrop-blur-lg rounded-3xl p-6 shadow-2xl"
-            >
+            <div className="bg-white/95 backdrop-blur-lg rounded-3xl p-6 shadow-2xl transform opacity-0 animate-fade-in" style={{animation: 'fadeIn 0.8s ease-out forwards'}}>
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
                   <div className="flex items-center space-x-2">
@@ -207,32 +191,22 @@ const AquaAnalyzerHome = () => {
                   </span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                  <button
                     onClick={() => setIsLiveStreamActive(!isLiveStreamActive)}
-                    className={`p-3 rounded-xl transition-colors ${
+                    className={`p-3 rounded-xl transition-all transform hover:scale-105 ${
                       isLiveStreamActive 
                         ? 'bg-red-100 text-red-600 hover:bg-red-200' 
                         : 'bg-green-100 text-green-600 hover:bg-green-200'
                     }`}
                   >
                     {isLiveStreamActive ? <PauseCircle className="w-5 h-5" /> : <PlayCircle className="w-5 h-5" />}
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="p-3 bg-gray-100 text-gray-600 rounded-xl hover:bg-gray-200 transition-colors"
-                  >
+                  </button>
+                  <button className="p-3 bg-gray-100 text-gray-600 rounded-xl hover:bg-gray-200 transition-all transform hover:scale-105">
                     <RefreshCw className="w-5 h-5" />
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="p-3 bg-blue-100 text-blue-600 rounded-xl hover:bg-blue-200 transition-colors"
-                  >
+                  </button>
+                  <button className="p-3 bg-blue-100 text-blue-600 rounded-xl hover:bg-blue-200 transition-all transform hover:scale-105">
                     <Camera className="w-5 h-5" />
-                  </motion.button>
+                  </button>
                 </div>
               </div>
 
@@ -247,43 +221,30 @@ const AquaAnalyzerHome = () => {
                       
                       {/* Animated fish */}
                       {[...Array(8)].map((_, i) => (
-                        <motion.div
+                        <div
                           key={i}
-                          className="absolute"
+                          className="absolute animate-bounce"
                           style={{
                             left: `${Math.random() * 80 + 10}%`,
                             top: `${Math.random() * 60 + 20}%`,
-                          }}
-                          animate={{
-                            x: [0, Math.random() * 100 - 50, 0],
-                            y: [0, Math.random() * 50 - 25, 0],
-                          }}
-                          transition={{
-                            duration: 3 + Math.random() * 2,
-                            repeat: Infinity,
-                            delay: Math.random() * 2,
+                            animationDelay: `${Math.random() * 2}s`,
+                            animationDuration: `${3 + Math.random() * 2}s`
                           }}
                         >
                           <Fish className="w-6 h-6 text-yellow-300" style={{ 
                             filter: `hue-rotate(${Math.random() * 360}deg)` 
                           }} />
-                        </motion.div>
+                        </div>
                       ))}
                       
                       {/* Bubbles */}
                       {[...Array(6)].map((_, i) => (
-                        <motion.div
+                        <div
                           key={`bubble-${i}`}
-                          className="absolute bottom-0 w-2 h-2 bg-white/30 rounded-full"
-                          style={{ left: `${20 + i * 15}%` }}
-                          animate={{
-                            y: [0, -400],
-                            opacity: [0, 1, 0],
-                          }}
-                          transition={{
-                            duration: 4,
-                            repeat: Infinity,
-                            delay: i * 0.5,
+                          className="absolute bottom-0 w-2 h-2 bg-white/30 rounded-full animate-ping"
+                          style={{ 
+                            left: `${20 + i * 15}%`,
+                            animationDelay: `${i * 0.5}s`
                           }}
                         />
                       ))}
@@ -318,7 +279,7 @@ const AquaAnalyzerHome = () => {
                   <span>Real-time Detection Active</span>
                 </div>
               </div>
-            </motion.div>
+            </div>
 
             {/* Fish Species Overview */}
             
@@ -326,183 +287,68 @@ const AquaAnalyzerHome = () => {
 
           {/* Right Column - Dashboard Stats */}
           <div className="space-y-6">
-            {/* System Health */}
-            {/* <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className={`bg-gradient-to-br ${
-                healthStatus.color === 'green' ? 'from-green-400 to-emerald-600' :
-                healthStatus.color === 'yellow' ? 'from-yellow-400 to-orange-500' :
-                'from-red-400 to-red-600'
-              } rounded-2xl p-6 shadow-xl text-white`}
-            >
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h3 className="text-lg font-bold">System Health</h3>
-                  <p className="text-white/90 text-sm">Overall Status</p>
+            {/* System Status and Total Count - Side by Side */}
+            <div className="grid grid-cols-2 gap-4">
+              {/* System Status - Compact */}
+              <div className="bg-white/95 backdrop-blur-lg rounded-2xl p-4 shadow-xl transform opacity-0 animate-fade-in" style={{animation: 'fadeIn 0.8s ease-out 0.6s forwards'}}>
+                <h3 className="text-sm font-bold text-gray-900 mb-3 flex items-center">
+                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center mr-2">
+                    <Check className="w-3 h-3 text-white" />
+                  </div>
+                  Status
+                </h3>
+                <div className="space-y-2 text-xs">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Camera</span>
+                    <span className="text-green-600 font-medium">Online</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">AI Detection</span>
+                    <span className="text-green-600 font-medium">Active</span>
+                  </div>
                 </div>
-                <Gauge className="w-8 h-8" />
               </div>
-              <div className="text-2xl font-bold">{healthStatus.status}</div>
-            </motion.div> */}
-            {/* System Info */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.6 }}
-              className="bg-white/95 backdrop-blur-lg rounded-2xl p-6 shadow-xl"
-            >
-              <h3 className="text-lg font-bold text-gray-900 mb-4">
-                💡 System Status
-              </h3>
-              <div className="space-y-3 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Camera Status</span>
-                  <span className="text-green-600 font-medium">Online</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">AI Detection</span>
-                  <span className="text-green-600 font-medium">Active</span>
-                </div>
-                {/* <div className="flex justify-between">
-                  <span className="text-gray-600">Last Backup</span>
-                  <span className="text-gray-600">2 hrs ago</span>
-                </div> */}
-                {/* <div className="flex justify-between">
-                  <span className="text-gray-600">Uptime</span>
-                  <span className="text-gray-600">15 days</span>
-                </div> */}
-              </div>
-            </motion.div>
-            {/* Quick Stats */}
-            <div className="grid grid-cols-1 gap-4">
+
+              {/* Total Fish Count - Compact */}
               <StatCard
                 icon={Fish}
-                title="Total Fish Count"
+                title="Total Fish"
                 value={totalFishCount}
-                subtitle="Currently detected"
+                subtitle="Detected"
                 color="blue"
                 trend={2}
               />
-              
-              {/* <StatCard
-                icon={Droplets}
-                title="Oxygen Level"
-                value={`${oxygenLevel.toFixed(1)} mg/L`}
-                subtitle={oxygenLevel >= 6 ? "Optimal range" : "Below optimal"}
-                color={oxygenLevel >= 6 ? "green" : "red"}
-                trend={oxygenLevel >= 7 ? 5 : -3}
-              /> */}
-              
-              {/* <StatCard
-                icon={Thermometer}
-                title="Water Temperature"
-                value={`${waterTemp.toFixed(1)}°C`}
-                subtitle="Current reading"
-                color="cyan"
-                trend={1}
-              /> */}
             </div>
 
-            {/* Alerts Panel */}
-            {/* <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.4 }}
-              className="bg-white/95 backdrop-blur-lg rounded-2xl p-6 shadow-xl"
-            >
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold text-gray-900 flex items-center">
-                  <Bell className="w-5 h-5 mr-2 text-orange-500" />
-                  Recent Alerts
-                </h3>
-                <span className="bg-orange-100 text-orange-700 px-2 py-1 rounded-full text-xs font-medium">
-                  {alerts.length} Active
-                </span>
-              </div>
-              <div className="space-y-3">
-                {alerts.map((alert) => (
-                  <motion.div
-                    key={alert.id}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    className={`p-3 rounded-lg border-l-4 ${
-                      alert.type === 'warning' 
-                        ? 'bg-orange-50 border-orange-400' 
-                        : 'bg-blue-50 border-blue-400'
-                    }`}
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <p className={`text-sm font-medium ${
-                          alert.type === 'warning' ? 'text-orange-800' : 'text-blue-800'
-                        }`}>
-                          {alert.message}
-                        </p>
-                        <p className="text-xs text-gray-500 mt-1">{alert.time}</p>
-                      </div>
-                      {alert.type === 'warning' && (
-                        <AlertTriangle className="w-4 h-4 text-orange-500 ml-2" />
-                      )}
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div> */}
-
-            {/* Emergency Contact */}
-            {/* <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.5 }}
-              className="bg-gradient-to-br from-red-500 to-red-600 rounded-2xl p-6 shadow-xl text-white"
-            >
-              <div className="flex items-center space-x-3 mb-4">
-                <AlertTriangle className="w-8 h-8" />
-                <div>
-                  <h3 className="font-bold text-lg">Emergency Alert</h3>
-                  <p className="text-red-100 text-sm">24/7 SMS Notifications</p>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="flex items-center justify-center space-x-2 py-3 bg-white text-red-600 rounded-xl font-semibold hover:shadow-lg transition-shadow"
-                >
-                  <Phone className="w-4 h-4" />
-                  <span>Call</span>
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="flex items-center justify-center space-x-2 py-3 bg-white text-red-600 rounded-xl font-semibold hover:shadow-lg transition-shadow"
-                >
-                  <MessageSquare className="w-4 h-4" />
-                  <span>SMS</span>
-                </motion.button>
-              </div>
-            </motion.div> */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="bg-white/95 backdrop-blur-lg rounded-2xl p-6 shadow-xl"
-            >
-              <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+            {/* Fish Species Count - Now takes full width */}
+            <div className="bg-white/95 backdrop-blur-lg rounded-2xl p-6 shadow-xl transform opacity-0 animate-fade-in" style={{animation: 'fadeIn 0.8s ease-out 0.2s forwards'}}>
+              <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
                 <Fish className="w-6 h-6 mr-2 text-blue-600" />
                 Fish Species Count
               </h3>
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4">
                 {fishSpecies.map((species, index) => (
                   <SpeciesCard key={index} species={species} />
                 ))}
               </div>
-            </motion.div>
+            </div>
             
           </div>
         </div>
       </main>
+
+      <style jsx>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
     </div>
   );
 };
