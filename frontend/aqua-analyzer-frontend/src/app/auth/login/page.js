@@ -1,328 +1,321 @@
-// src/app/login/page.tsx
 'use client';
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Button, Input, Card, CardBody, Divider } from '@heroui/react';
+import { Eye, EyeOff, Fish, Mail, Lock, ArrowRight, Phone, MessageCircle } from 'lucide-react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Eye, EyeOff, Fish, Waves, Mail, Phone, MapPin, X } from 'lucide-react';
-
-interface LoginFormData {
-  userId: string;
-  password: string;
-}
 
 export default function LoginPage() {
-  const [formData, setFormData] = useState<LoginFormData>({
-    userId: '',
-    password: ''
-  });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [showContactModal, setShowContactModal] = useState(false);
-  const [errors, setErrors] = useState<Partial<LoginFormData>>({});
-  
   const router = useRouter();
+  const [error, setError] = useState("");
+  const [formData, setFormData] = useState({
+    username: '',
+    password: ''
+  });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    // Clear error when user starts typing
-    if (errors[name as keyof LoginFormData]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
-    }
+  // Hardcoded credentials for demo
+  const validCredentials = {
+    username: 'aqua',
+    password: 'aqua123'
   };
 
-  const validateForm = (): boolean => {
-    const newErrors: Partial<LoginFormData> = {};
-    
-    if (!formData.userId.trim()) {
-      newErrors.userId = 'User ID is required';
-    }
-    
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!validateForm()) return;
-    
     setIsLoading(true);
-    
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // For demo purposes, accept any valid input
-      if (formData.userId && formData.password.length >= 6) {
-        // Store user session (in real app, use proper auth)
-        localStorage.setItem('aqua_user', JSON.stringify({
-          userId: formData.userId,
-          loginTime: new Date().toISOString()
-        }));
-        
-        router.push('/dashboard');
+    setError("");
+
+    // Simulate loading time
+    setTimeout(() => {
+      if (formData.username === validCredentials.username && 
+          formData.password === validCredentials.password) {
+        // Success - redirect to home
+        router.push('/home');
+      } else {
+        setError('Invalid credentials. Use username: admin, password: aqua123');
       }
-    } catch (error) {
-      console.error('Login failed:', error);
-    } finally {
       setIsLoading(false);
-    }
+    }, 1500);
   };
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        duration: 0.6,
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: { duration: 0.5 }
-    }
-  };
-
-  const waveVariants = {
-    animate: {
-      x: [0, -100, 0],
-      transition: {
-        duration: 8,
-        repeat: Infinity,
-        ease: "easeInOut"
-      }
-    }
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    if (error) setError(""); // Clear error when user starts typing
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50 flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Animated Background Elements */}
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-teal-800 to-cyan-900 flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Animated Background Elements - Fish Swimming */}
       <div className="absolute inset-0 overflow-hidden">
-        <motion.div 
-          variants={waveVariants}
-          animate="animate"
-          className="absolute -bottom-10 -left-10 w-96 h-96 bg-gradient-to-r from-blue-200/30 to-cyan-200/30 rounded-full blur-3xl"
-        />
-        <motion.div 
-          variants={waveVariants}
-          animate="animate"
-          style={{ animationDelay: '2s' }}
-          className="absolute -top-10 -right-10 w-96 h-96 bg-gradient-to-r from-teal-200/30 to-blue-200/30 rounded-full blur-3xl"
-        />
-        
-        {/* Floating Fish Icons */}
-        {[...Array(6)].map((_, i) => (
+        {[...Array(8)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute text-blue-200/40"
+            className="absolute"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
+              left: `${-10 + (i % 2) * 120}%`,
+              top: `${10 + i * 12}%`,
             }}
             animate={{
-              y: [0, -20, 0],
-              x: [0, 10, 0],
-              rotate: [0, 5, 0]
+              x: [0, window.innerWidth + 100],
             }}
             transition={{
-              duration: 4 + Math.random() * 2,
+              duration: 15 + Math.random() * 10,
               repeat: Infinity,
-              delay: Math.random() * 2
+              delay: Math.random() * 5,
+              ease: "linear"
             }}
           >
-            <Fish size={24 + Math.random() * 16} />
+            <Fish className="w-8 h-8 text-cyan-200/20 transform rotate-0" />
           </motion.div>
+        ))}
+        
+        {/* Floating Bubbles */}
+        {[...Array(12)].map((_, i) => (
+          <motion.div
+            key={`bubble-${i}`}
+            className="absolute rounded-full border-2 border-cyan-300/10"
+            style={{
+              width: Math.random() * 60 + 20,
+              height: Math.random() * 60 + 20,
+              left: `${Math.random() * 100}%`,
+              top: `100%`,
+            }}
+            animate={{
+              y: [0, -window.innerHeight - 100],
+              opacity: [0, 0.6, 0],
+              scale: [0.5, 1, 0.5],
+            }}
+            transition={{
+              duration: 8 + Math.random() * 4,
+              repeat: Infinity,
+              delay: Math.random() * 3,
+              ease: "easeOut"
+            }}
+          />
         ))}
       </div>
 
       <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        className="relative z-10 w-full max-w-md"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="w-full max-w-md relative z-10"
       >
-        {/* Logo and Title */}
-        <motion.div variants={itemVariants} className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500 to-teal-500 rounded-2xl mb-4 shadow-2xl">
-            <Waves className="w-10 h-10 text-white" />
-          </div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">
-            AquaAnalyzer
-          </h1>
-          <p className="text-gray-600 mt-2">Fish Detection & Monitoring System</p>
-        </motion.div>
-
-        {/* Login Form */}
-        <motion.div 
-          variants={itemVariants}
-          className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border border-white/20"
-        >
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* User ID Field */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                User ID
-              </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  name="userId"
-                  value={formData.userId}
-                  onChange={handleInputChange}
-                  className={`w-full px-4 py-3 rounded-xl border-2 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 ${
-                    errors.userId 
-                      ? 'border-red-300 bg-red-50/50' 
-                      : 'border-gray-200 bg-white/50 focus:border-blue-400'
-                  }`}
-                  placeholder="Enter your user ID"
-                />
-                {errors.userId && (
-                  <motion.p 
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-red-500 text-sm mt-1"
-                  >
-                    {errors.userId}
-                  </motion.p>
-                )}
-              </div>
-            </div>
-
-            {/* Password Field */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  name="password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  className={`w-full px-4 py-3 pr-12 rounded-xl border-2 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 ${
-                    errors.password 
-                      ? 'border-red-300 bg-red-50/50' 
-                      : 'border-gray-200 bg-white/50 focus:border-blue-400'
-                  }`}
-                  placeholder="Enter your password"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-                >
-                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                </button>
-                {errors.password && (
-                  <motion.p 
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-red-500 text-sm mt-1"
-                  >
-                    {errors.password}
-                  </motion.p>
-                )}
-              </div>
-            </div>
-
-            {/* Submit Button */}
-            <motion.button
-              type="submit"
-              disabled={isLoading}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="w-full bg-gradient-to-r from-blue-500 to-teal-500 text-white py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center"
-            >
-              {isLoading ? (
-                <div className="flex items-center space-x-2">
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  <span>Signing In...</span>
-                </div>
-              ) : (
-                'Sign In'
-              )}
-            </motion.button>
-          </form>
-
-          {/* Contact Us Link */}
-          <motion.div variants={itemVariants} className="mt-6 text-center">
-            <button
-              onClick={() => setShowContactModal(true)}
-              className="text-blue-600 hover:text-blue-700 font-medium transition-colors duration-300"
-            >
-              Need help? Contact Us
-            </button>
-          </motion.div>
-        </motion.div>
-      </motion.div>
-
-      {/* Contact Modal */}
-      <AnimatePresence>
-        {showContactModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50"
-            onClick={() => setShowContactModal(false)}
-          >
+        <Card className="bg-white/95 backdrop-blur-lg shadow-2xl border border-cyan-200/20">
+          <CardBody className="p-8">
+            {/* Logo and Header */}
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
+              initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
-              className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl"
+              transition={{ delay: 0.2, duration: 0.5 }}
+              className="text-center mb-8"
             >
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-2xl font-bold text-gray-800">Contact Us</h3>
-                <button
-                  onClick={() => setShowContactModal(false)}
-                  className="text-gray-400 hover:text-gray-600 transition-colors"
-                >
-                  <X size={24} />
-                </button>
-              </div>
-              
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3 text-gray-600">
-                  <Mail className="w-5 h-5 text-blue-500" />
-                  <span>support@aquaanalyzer.com</span>
-                </div>
-                <div className="flex items-center space-x-3 text-gray-600">
-                  <Phone className="w-5 h-5 text-blue-500" />
-                  <span>+1 (555) 123-4567</span>
-                </div>
-                <div className="flex items-center space-x-3 text-gray-600">
-                  <MapPin className="w-5 h-5 text-blue-500" />
-                  <span>123 Ocean Drive, Marine City</span>
-                </div>
-              </div>
-              
-              <div className="mt-6 p-4 bg-blue-50 rounded-2xl">
-                <p className="text-sm text-blue-700">
-                  <strong>Support Hours:</strong><br />
-                  Monday - Friday: 9:00 AM - 6:00 PM<br />
-                  Saturday: 10:00 AM - 4:00 PM
-                </p>
-              </div>
+              <motion.div
+                animate={{ 
+                  rotate: [0, 5, -5, 0],
+                  scale: [1, 1.05, 1]
+                }}
+                transition={{ 
+                  duration: 3, 
+                  repeat: Infinity, 
+                  repeatDelay: 2 
+                }}
+                className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-600 via-cyan-500 to-teal-500 rounded-3xl mb-6 shadow-lg"
+              >
+                <Fish className="w-10 h-10 text-white" />
+              </motion.div>
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-700 via-cyan-600 to-teal-600 bg-clip-text text-transparent">
+                AquaAnalyzer
+              </h1>
+              <p className="text-gray-600 mt-2 text-sm">
+                Fish Detection & Monitoring System
+              </p>
+              {/* <div className="mt-4 px-4 py-2 bg-blue-50 rounded-lg border border-blue-200">
+                <p className="text-xs text-blue-700 font-medium">Demo Credentials:</p>
+                <p className="text-xs text-blue-600">Username: admin | Password: aqua123</p>
+              </div> */}
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+
+            {/* Error Message */}
+            <AnimatePresence>
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg"
+                >
+                  <p className="text-red-600 text-sm">{error}</p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Login Form */}
+            <motion.form
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3, duration: 0.5 }}
+              onSubmit={handleSubmit}
+              className="space-y-6"
+            >
+              <motion.div
+                whileFocus={{ scale: 1.02 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Input
+                  type="text"
+                  label="Username"
+                  placeholder="Enter your username"
+                  value={formData.username}
+                  onChange={(e) => handleInputChange('username', e.target.value)}
+                  startContent={<Mail className="w-4 h-4 text-cyan-500" />}
+                  variant="bordered"
+                  classNames={{
+                    input: "text-gray-700",
+                    inputWrapper: "border-gray-300 hover:border-cyan-400 focus-within:!border-cyan-500 transition-all duration-200"
+                  }}
+                  required
+                />
+              </motion.div>
+
+              <motion.div
+                whileFocus={{ scale: 1.02 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  label="Password"
+                  placeholder="Enter your password"
+                  value={formData.password}
+                  onChange={(e) => handleInputChange('password', e.target.value)}
+                  startContent={<Lock className="w-4 h-4 text-cyan-500" />}
+                  endContent={
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="text-gray-400 hover:text-cyan-600 transition-colors"
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  }
+                  variant="bordered"
+                  classNames={{
+                    input: "text-gray-700",
+                    inputWrapper: "border-gray-300 hover:border-cyan-400 focus-within:!border-cyan-500 transition-all duration-200"
+                  }}
+                  required
+                />
+              </motion.div>
+
+
+
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Button
+                  type="submit"
+                  className="w-full bg-gradient-to-r from-blue-600 via-cyan-600 to-teal-600 text-white font-semibold py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                  isLoading={isLoading}
+                  spinner={
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    >
+                      <Fish className="w-4 h-4" />
+                    </motion.div>
+                  }
+                >
+                  {!isLoading && (
+                    <motion.div
+                      className="flex items-center space-x-2"
+                      whileHover={{ x: 2 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <span>Sign In to AquaAnalyzer</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </motion.div>
+                  )}
+                </Button>
+              </motion.div>
+            </motion.form>
+
+            <Divider className="my-6" />
+
+            {/* Contact Us Section */}
+            {/* <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5, duration: 0.5 }}
+              className="space-y-4"
+            >
+              <h3 className="text-center text-gray-700 font-medium">Need Help?</h3>
+              <div className="grid grid-cols-2 gap-3">
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Button
+                    variant="bordered"
+                    className="w-full py-4 border-cyan-200 hover:border-cyan-400 hover:bg-cyan-50 transition-all duration-200"
+                    startContent={<Phone className="w-4 h-4 text-cyan-600" />}
+                  >
+                    <span className="text-gray-700 text-sm">Call Us</span>
+                  </Button>
+                </motion.div>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Button
+                    variant="bordered"
+                    className="w-full py-4 border-cyan-200 hover:border-cyan-400 hover:bg-cyan-50 transition-all duration-200"
+                    startContent={<MessageCircle className="w-4 h-4 text-cyan-600" />}
+                  >
+                    <span className="text-gray-700 text-sm">Chat</span>
+                  </Button>
+                </motion.div>
+              </div>
+              <div className="text-center text-xs text-gray-500 space-y-1">
+                <p>Email: support@aquaanalyzer.com</p>
+                <p>Phone: +1 (555) 123-4567</p>
+                <p>Available 24/7 for technical support</p>
+              </div>
+            </motion.div> */}
+          </CardBody>
+        </Card>
+
+        {/* Floating Fish Animation */}
+        <AnimatePresence>
+          {[...Array(3)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute text-cyan-400"
+              style={{
+                left: `${15 + i * 25}%`,
+                top: `${-15 + i * 8}%`,
+              }}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{
+                opacity: [0, 0.7, 0],
+                x: [0, 30, 60],
+                rotate: [0, 10, -10, 0]
+              }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                delay: i * 0.8,
+                repeatDelay: 3
+              }}
+            >
+              <Fish className="w-6 h-6" />
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </motion.div>
     </div>
   );
 }
