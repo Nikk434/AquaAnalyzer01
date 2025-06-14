@@ -113,6 +113,8 @@ export default function AnalyzePage() {
         <div className="w-full lg:w-1/2">
           <h2 className="text-lg font-semibold mb-2">🎥 Live Video Feed</h2>
           <div className="border rounded overflow-hidden w-fit">
+            {/* console.log("FEED"); */}
+            
             <img
               src="http://127.0.0.1:5000/video_feed"
               alt="Live Video Stream"
