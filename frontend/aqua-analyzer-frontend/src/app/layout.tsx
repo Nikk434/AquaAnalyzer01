@@ -7,8 +7,8 @@ import { Toaster } from 'react-hot-toast';
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Hydrace - Gamified Water Tracking',
-  description: 'Track your daily water intake with friends and achieve your hydration goals',
+  title: 'AquaAnalyzer - Smart monitering for smart fisheries',
+  description: '',
 }
 
 export default function RootLayout({

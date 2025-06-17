@@ -162,6 +162,7 @@ while True:
             current_time = time.time()
             if GEOFENCE_ALERT_ENABLED and geofence_crossed and (current_time - last_alert_time > alert_interval):
                 send_sms_alert("ALERT: Geofence line crossed! Oxygen levels may be low.")
+                print("ALERT: Geofence line crossed! Oxygen levels may be low.")
                 last_alert_time = current_time
 
             # Display resized frame
