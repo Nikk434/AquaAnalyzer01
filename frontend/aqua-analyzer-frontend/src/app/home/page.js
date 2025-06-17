@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
+// import { stopAnalysis } from "../api/stop/route";
 import {
   Fish,
   Waves,
@@ -161,12 +162,12 @@ const AquaAnalyzerHome = () => {
         }]);
 
         // Auto-retry after 3 seconds
-        setTimeout(() => {
-          if (isLiveStreamActive) {
-            console.log('Attempting to reconnect...');
-            startAnalysis();
-          }
-        }, 3000);
+        // setTimeout(() => {
+        //   if (isLiveStreamActive) {
+        //     console.log('Attempting to reconnect...');
+        //     startAnalysis();
+        //   }
+        // }, 3000);
       };
 
     } catch (err) {
@@ -182,12 +183,41 @@ const AquaAnalyzerHome = () => {
     }
   };
 
-  const stopAnalysis = () => {
-    setIsAnalyzing(false);
-    setIsLiveStreamActive(false);
-    setConnectionStatus('disconnected');
-    cleanupEventSource();
-  };
+  // const stopAnalysis = () => {
+  //   setIsAnalyzing(false);
+  //   setIsLiveStreamActive(false);
+  //   setConnectionStatus('disconnected');
+  //   cleanupEventSource();
+  // };
+
+  const stop_analysis = async () => {
+  try {
+    const response = await fetch('/api/stop', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      setIsAnalyzing(false);
+      setIsLiveStreamActive(false);
+      setConnectionStatus('disconnected');
+      cleanupEventSource(); // Clean up the SSE connection
+      alert('Analysis stopped successfully!');
+    } else {
+      alert(`Failed to stop analysis: ${result.message}`);
+    }
+
+  } catch (error) {
+    console.error('Error stopping analysis:', error);
+    alert('An unexpected error occurred while stopping analysis.');
+  }
+
+
+};
 
   // Get one-time data fetch (using POST endpoint)
   // const fetchOneTimeData = async () => {
@@ -232,7 +262,7 @@ const AquaAnalyzerHome = () => {
   // Handle play/pause button
   const handleStreamToggle = () => {
     if (isLiveStreamActive && isAnalyzing) {
-      stopAnalysis();
+      stop_analysis();
     } else if (!isLiveStreamActive && !isAnalyzing) {
       startAnalysis();
     }
@@ -397,9 +427,9 @@ const AquaAnalyzerHome = () => {
                     {connectionStatus === 'connecting' ? (
                       <RefreshCw className="w-5 h-5 animate-spin" />
                     ) : isLiveStreamActive ? (
-                      <PauseCircle className="w-5 h-5" />
+                      <PauseCircle onClick={stop_analysis} className="w-5 h-5" />
                     ) : (
-                      <PlayCircle className="w-5 h-5" />
+                      <PlayCircle onClick={startAnalysis} className="w-5 h-5" />
                     )}
                   </button>
                   {/* <button
