@@ -1,39 +1,31 @@
-# Stage 1: Install dependencies and build app
-# FROM node:18-alpine AS builder
-FROM node:22
+# Stage 1: Build the Next.js app
+FROM node:22 AS builder
 
-# Set working directory
 WORKDIR /app
 
-# Copy dependency files
+# Copy dependency files and install
 COPY package.json package-lock.json ./
-
-# Install dependencies
 RUN npm install
 
-# Copy application files
+# Copy rest of the files and build
 COPY . .
-
-# Build the Next.js app
 RUN npm run build
 
-# Stage 2: Run the app with minimal image
+# Stage 2: Run the built app
 FROM node:22 AS runner
 
-# Set working directory
 WORKDIR /app
 
-# Copy only necessary runtime files
-COPY . . 
-# --from=builder /app/.next .next
+# Copy only production artifacts from builder
+# COPY --from=builder /app/.next .next
 # COPY --from=builder /app/public ./public
 # COPY --from=builder /app/package.json ./package.json
 # COPY --from=builder /app/next.config.js ./next.config.js
 
 # Install only production dependencies
-RUN npm install && npm run build
+RUN npm install --omit=dev
 
-# Expose port
+# Expose port (optional but recommended)
 EXPOSE 3000
 
 # Start the app
