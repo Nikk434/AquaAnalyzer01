@@ -451,7 +451,7 @@ const AquaAnalyzerHome = () => {
                   <div className="absolute inset-0">
                     {/* Real video feed from API */}
                     <img
-                      src="http://127.0.0.1:5000/video_feed"
+                      src="https://aqua-analyzer-backend.nllnwr.easypanel.host/video_feed"
                       alt="Live Video Stream"
                       className="w-full h-full object-cover rounded-2xl"
                       onError={(e) => {
