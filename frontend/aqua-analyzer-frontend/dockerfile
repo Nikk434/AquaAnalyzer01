@@ -31,7 +31,7 @@ COPY . .
 # COPY --from=builder /app/next.config.js ./next.config.js
 
 # Install only production dependencies
-RUN npm install --omit=dev
+RUN npm install && npm run build
 
 # Expose port
 EXPOSE 3000
