@@ -1,0 +1,34 @@
+# Stage 1: Build the app
+FROM node:22 AS builder
+
+# Set working directory to app folder
+WORKDIR /app
+
+# Copy package files and install dependencies
+COPY aqua-analyzer-frontend/package.json aqua-analyzer-frontend/package-lock.json ./
+RUN npm install
+
+# Copy the rest of the app code
+COPY aqua-analyzer-frontend .
+
+# Build the Next.js app
+RUN npm run build
+
+# Stage 2: Serve app with minimal image
+FROM node:22-alpine AS runner
+WORKDIR /app
+
+# Copy runtime files from builder stage
+COPY --from=builder /app/.next .next
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/next.config.js ./next.config.js
+
+# Install production dependencies only
+RUN npm install --omit=dev
+
+# Expose Next.js default port
+EXPOSE 3000
+
+# Start the app
+CMD ["npm", "start"]
