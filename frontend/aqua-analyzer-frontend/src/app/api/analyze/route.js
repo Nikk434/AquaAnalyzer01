@@ -1,6 +1,6 @@
 export async function GET(req) {
   try {
-    const API_BASE_URL = "http://127.0.0.1:5000";
+    const API_BASE_URL = "https://aqua-analyzer-backend.nllnwr.easypanel.host";
     const flaskEndpoint = `${API_BASE_URL}/analyze_stream`; // Changed to /analyze/stream
 
     const flaskResponse = await fetch(flaskEndpoint, {
