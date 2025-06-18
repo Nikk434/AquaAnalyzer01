@@ -520,7 +520,7 @@ def run_fish_detection_analysis():
 
                         # Check for geofence crossing
                         if y2 > geofence_line_y:
-                            geofence_crossed = True
+                            geofence_crossed = False
 
                     # Remove inactive fish IDs
                     active_fish_ids = {id: frame for id, frame in active_fish_ids.items()
@@ -535,6 +535,7 @@ def run_fish_detection_analysis():
                     current_time = time.time()
                     if GEOFENCE_ALERT_ENABLED and geofence_crossed and (current_time - last_alert_time > alert_interval):
                         threading.Thread(target=lambda: send_sms_alert("ALERT: Geofence line crossed! Oxygen levels may be low."), daemon=True).start()
+                        print("ALERT: Geofence line crossed! Oxygen levels may be low.")
                         last_alert_time = current_time
 
                 except Exception as e:
