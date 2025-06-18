@@ -1,0 +1,24 @@
+# Use an official Python image as the base
+FROM python:3.10
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy all necessary files and folders to the container
+COPY requirements.txt ./
+COPY main.py ./
+COPY server.py ./
+COPY bestmahi.pt ./
+COPY video/ ./video/
+
+# (Optional) Copy the .env if it's needed
+# COPY .env ./
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Set environment variables if needed
+# ENV VAR_NAME=value
+
+# Run your application (adjust this as needed)
+CMD ["python", "server.py"]
