@@ -3,7 +3,7 @@ export async function POST() {
   try {
     // Call your backend service or logic to stop the analysis
     // For example, forward the request to Flask backend:
-    const response = await fetch('https://aquaanalyzer.onrender.com/stop_analysis', {
+    const response = await fetch('https://aquaanalyzer01.onrender.com/stop_analysis', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

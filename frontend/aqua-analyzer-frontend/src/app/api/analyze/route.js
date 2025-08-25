@@ -1,6 +1,6 @@
 export async function GET(req) {
   try {
-    const API_BASE_URL = "https://aquaanalyzer.onrender.com";
+    const API_BASE_URL = "https://aquaanalyzer01.onrender.com";
     const flaskEndpoint = `${API_BASE_URL}/analyze_stream`; // Changed to /analyze/stream
 
     const flaskResponse = await fetch(flaskEndpoint, {
