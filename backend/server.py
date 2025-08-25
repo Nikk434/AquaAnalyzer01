@@ -736,4 +736,4 @@ if __name__ == '__main__':
     # Remove automatic analysis thread start
     print(f"[INFO] Starting Flask server on http://0.0.0.0:5000")
     print(f"[INFO] Analysis will start when /analyze_stream endpoint is accessed")
-    app.run(host="0.0.0.0", port=10000, debug=True, threaded=True)
+    app.run(host="0.0.0.0", port=5000, debug=True, threaded=True)
